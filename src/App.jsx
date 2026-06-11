@@ -3,6 +3,7 @@ import { useTheme } from './context/ThemeContext';
 import { INITIAL_MATCHES, GROUPS } from './data/tournamentData';
 import { calculateStandings, generateRoundOf32Matches } from './utils/predictorEngine';
 import { savePredictions, loadPredictions, onAuthStateChange, signOutUser } from './firebase/config';
+import { fetchLiveFixtures } from './utils/apiFootball';
 
 import Header from './components/Header';
 import WelcomeModal from './components/WelcomeModal';
@@ -37,6 +38,7 @@ export default function App() {
   // Syncing states
   const [syncStatus, setSyncStatus] = useState("idle"); // idle, saving, saved, error
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState(null);
 
   // Elimination alert states
   const [silencedNation, setSilencedNation] = useState(null);
@@ -53,22 +55,39 @@ export default function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChange(async (authUser) => {
       setIsInitialLoadComplete(false);
+      let loadedMatches = INITIAL_MATCHES;
+      let finalUserNation = userNation;
+      let finalKnockoutWinners = knockoutWinners;
+      let finalHypeCount = hypeCount;
+
       if (authUser) {
         setUser(authUser);
         setUserId(authUser.uid);
         
         const savedData = await loadPredictions(authUser.uid);
         if (savedData) {
-          if (savedData.userNation) setUserNation(savedData.userNation);
-          if (savedData.matches) setMatches(savedData.matches);
-          if (savedData.knockoutWinners) setKnockoutWinners(savedData.knockoutWinners);
-          if (savedData.hypeCount) setHypeCount(savedData.hypeCount);
+          if (savedData.userNation) {
+            finalUserNation = savedData.userNation;
+            setUserNation(savedData.userNation);
+          }
+          if (savedData.matches) {
+            loadedMatches = savedData.matches;
+            setMatches(savedData.matches);
+          }
+          if (savedData.knockoutWinners) {
+            finalKnockoutWinners = savedData.knockoutWinners;
+            setKnockoutWinners(savedData.knockoutWinners);
+          }
+          if (savedData.hypeCount) {
+            finalHypeCount = savedData.hypeCount;
+            setHypeCount(savedData.hypeCount);
+          }
         } else {
           await savePredictions(authUser.uid, {
             userNation,
-            matches,
-            knockoutWinners,
-            hypeCount
+            matches: INITIAL_MATCHES,
+            knockoutWinners: {},
+            hypeCount: 0
           });
         }
       } else {
@@ -78,17 +97,100 @@ export default function App() {
 
         const savedData = await loadPredictions(guestId);
         if (savedData) {
-          if (savedData.userNation) setUserNation(savedData.userNation);
-          if (savedData.matches) setMatches(savedData.matches);
-          if (savedData.knockoutWinners) setKnockoutWinners(savedData.knockoutWinners);
-          if (savedData.hypeCount) setHypeCount(savedData.hypeCount);
+          if (savedData.userNation) {
+            finalUserNation = savedData.userNation;
+            setUserNation(savedData.userNation);
+          }
+          if (savedData.matches) {
+            loadedMatches = savedData.matches;
+            setMatches(savedData.matches);
+          }
+          if (savedData.knockoutWinners) {
+            finalKnockoutWinners = savedData.knockoutWinners;
+            setKnockoutWinners(savedData.knockoutWinners);
+          }
+          if (savedData.hypeCount) {
+            finalHypeCount = savedData.hypeCount;
+            setHypeCount(savedData.hypeCount);
+          }
         }
       }
+
+      // Now fetch live fixtures and merge them
+      try {
+        const liveFixtures = await fetchLiveFixtures();
+        if (liveFixtures && liveFixtures.length > 0) {
+          const merged = loadedMatches.map((m) => {
+            const matched = liveFixtures.find(
+              (f) =>
+                f.teamHome.toLowerCase() === m.teamHome.toLowerCase() &&
+                f.teamAway.toLowerCase() === m.teamAway.toLowerCase()
+            );
+            if (matched && matched.isRealResult) {
+              return {
+                ...m,
+                homeScore: matched.homeScore,
+                awayScore: matched.awayScore,
+                isRealResult: true,
+                statusText: matched.statusText,
+                predicted: true
+              };
+            }
+            return m;
+          });
+          setMatches(merged);
+          const now = new Date();
+          setLastRefreshed(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        }
+      } catch (err) {
+        console.error("Failed to merge live fixtures on boot:", err);
+      }
+
       setIsInitialLoadComplete(true);
     });
 
     return () => unsubscribe();
   }, [setUserNation]);
+
+  // 30-minute background polling interval for live fixtures
+  useEffect(() => {
+    if (!isInitialLoadComplete) return;
+
+    const interval = setInterval(async () => {
+      console.log("[API-Football] 30-minute polling refresh triggered.");
+      try {
+        const liveFixtures = await fetchLiveFixtures();
+        if (liveFixtures && liveFixtures.length > 0) {
+          setMatches((prevMatches) => {
+            return prevMatches.map((m) => {
+              const matched = liveFixtures.find(
+                (f) =>
+                  f.teamHome.toLowerCase() === m.teamHome.toLowerCase() &&
+                  f.teamAway.toLowerCase() === m.teamAway.toLowerCase()
+              );
+              if (matched && matched.isRealResult) {
+                return {
+                  ...m,
+                  homeScore: matched.homeScore,
+                  awayScore: matched.awayScore,
+                  isRealResult: true,
+                  statusText: matched.statusText,
+                  predicted: true
+                };
+              }
+              return m;
+            });
+          });
+          const now = new Date();
+          setLastRefreshed(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        }
+      } catch (err) {
+        console.error("[API-Football] Background sync error:", err);
+      }
+    }, 1800000); // 30 minutes in ms
+
+    return () => clearInterval(interval);
+  }, [isInitialLoadComplete]);
 
   // Debounced Auto-Save to Firestore or LocalStorage
   useEffect(() => {
@@ -426,6 +528,7 @@ export default function App() {
         user={user}
         onOpenLoginModal={() => setIsAuthModalOpen(true)}
         onSignOut={handleSignOut}
+        lastRefreshed={lastRefreshed}
       />
 
       {/* Main Workspace Layout */}
@@ -463,6 +566,7 @@ export default function App() {
                 matches={matches}
                 onUpdateMatchScore={handleUpdateMatchScore}
                 onFlagClick={setSelectedRosterTeam}
+                lastRefreshed={lastRefreshed}
               />
             )}
             {activeTab === "hub" && (

@@ -3,7 +3,7 @@ import { useTheme } from '../context/ThemeContext';
 import { getFlagUrl } from '../data/tournamentData';
 import { Trophy, Shield, RefreshCw, LogOut, User, LogIn } from 'lucide-react';
 
-export default function Header({ badgeRanking, user, onOpenLoginModal, onSignOut }) {
+export default function Header({ badgeRanking, user, onOpenLoginModal, onSignOut, lastRefreshed }) {
   const { userNation, setUserNation, activeTheme, allThemes } = useTheme();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState("");
@@ -59,6 +59,15 @@ export default function Header({ badgeRanking, user, onOpenLoginModal, onSignOut
           </span>
         </div>
       </div>
+
+      {/* Live Sync Status */}
+      {lastRefreshed && (
+        <div className="hidden lg:flex items-center space-x-2 bg-slate-900/60 border border-emerald-500/20 py-1.5 px-3 rounded-full text-xs font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="text-slate-400 uppercase tracking-widest text-[9px] font-bold">Live Sync:</span>
+          <span className="text-emerald-400 font-mono text-[10px]">Active ({lastRefreshed})</span>
+        </div>
+      )}
 
       {/* Countdown Timer */}
       <div className="hidden md:flex items-center space-x-2 bg-slate-900/60 border border-white/5 py-1.5 px-3 rounded-full text-xs font-semibold">

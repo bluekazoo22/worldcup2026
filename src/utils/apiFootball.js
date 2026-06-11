@@ -9,7 +9,7 @@ const HEADERS = {
   "x-rapidapi-host": "v3.football.api-sports.io"
 };
 
-// API Name Mappings (Adjust team names to match API-Football exactly)
+// API Name Mappings (For outbound requests)
 const getApiTeamName = (name) => {
   const mappings = {
     "USA": "USA",
@@ -22,12 +22,31 @@ const getApiTeamName = (name) => {
   return mappings[name] || name;
 };
 
+// Inbound Normalization (Normalize API-Football team names to match our app names)
+const normalizeApiTeamName = (name) => {
+  const mappings = {
+    "Korea Republic": "South Korea",
+    "Côte d'Ivoire": "Ivory Coast",
+    "USA": "United States", // Align with United States in GROUPS
+    "China PR": "China",
+    "IR Iran": "Iran",
+    "Czech Republic": "Czechia",
+    "Cabo Verde": "Cape Verde",
+    "Turkey": "Türkiye",
+    "Congo DR": "DR Congo",
+    "Bosnia & Herzegovina": "Bosnia and Herzegovina",
+    "Bosnia-Herzegovina": "Bosnia and Herzegovina",
+    "Curacao": "Curaçao"
+  };
+  return mappings[name] || name;
+};
+
 // Fetch real national team roster from API-Football
 export const fetchRealRoster = async (teamName) => {
   const cacheKey = `wc2026_api_roster_${teamName}`;
   const cached = localStorage.getItem(cacheKey);
 
-  // 24 Hour Caching (24 * 60 * 60 * 1000 ms = 86,400,000 ms)
+  // 24 Hour Caching (86,400,000 ms)
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
@@ -45,7 +64,6 @@ export const fetchRealRoster = async (teamName) => {
   console.log(`[API-Football] Fetching live details for ${teamName} (query: ${queryName})`);
 
   try {
-    // Step 1: Query Team ID
     const teamRes = await fetch(`${BASE_URL}/teams?name=${encodeURIComponent(queryName)}`, {
       method: "GET",
       headers: HEADERS
@@ -59,10 +77,8 @@ export const fetchRealRoster = async (teamName) => {
     }
 
     const teamProfile = teamData.response[0].team;
-    const teamVenue = teamData.response[0].venue;
     const teamId = teamProfile.id;
 
-    // Step 2: Query Squad List
     const squadRes = await fetch(`${BASE_URL}/players/squads?team=${teamId}`, {
       method: "GET",
       headers: HEADERS
@@ -84,7 +100,6 @@ export const fetchRealRoster = async (teamName) => {
       photo: p.photo
     }));
 
-    // Step 3: Query Coach details (to populate Manager)
     let manager = "Unknown Coach";
     try {
       const coachRes = await fetch(`${BASE_URL}/coachs?team=${teamId}`, {
@@ -102,7 +117,6 @@ export const fetchRealRoster = async (teamName) => {
       console.warn("Failed to fetch coach details from API, using default", coachErr);
     }
 
-    // Structure output matching our standard app Roster drawer schema
     const formattedRoster = {
       team: {
         id: teamId,
@@ -110,21 +124,20 @@ export const fetchRealRoster = async (teamName) => {
         country: teamProfile.country,
         founded: teamProfile.founded || 1900,
         logo: teamProfile.logo,
-        fifaRank: Math.floor(Math.random() * 20) + 5, // Mock rank since API-Football does not host FIFA ranks directly in basic team endpoints
+        fifaRank: Math.floor(Math.random() * 20) + 5,
         manager: manager,
         keyPlayer: playersList[0] ? playersList[0].name : "Star Player"
       },
-      recentForm: ["W", "D", "W", "W", "L"], // Default recent form placeholder
+      recentForm: ["W", "D", "W", "W", "L"],
       topScorers: playersList.slice(0, 3).map((p, idx) => ({
         name: p.name,
-        goals: 6 - idx, // Mock scorers counts
+        goals: 6 - idx,
         position: p.position,
         photo: p.photo
       })),
       players: playersList
     };
 
-    // Save in cache
     localStorage.setItem(cacheKey, JSON.stringify({
       data: formattedRoster,
       timestamp: Date.now()
@@ -133,6 +146,76 @@ export const fetchRealRoster = async (teamName) => {
     return formattedRoster;
   } catch (error) {
     console.error(`[API-Football] Error fetching live data for ${teamName}:`, error);
-    return null; // Return null so caller knows to use mock fallback
+    return null;
+  }
+};
+
+// Fetch real-time World Cup 2026 fixtures and live scores
+export const fetchLiveFixtures = async () => {
+  const cacheKey = "wc2026_live_fixtures_cache";
+  const cached = localStorage.getItem(cacheKey);
+
+  // 30 Minutes Caching (30 * 60 * 1000 = 1,800,000 ms)
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      const isExpired = Date.now() - parsed.timestamp > 1800000;
+      if (!isExpired) {
+        console.log("[API-Football] Loaded cache for live World Cup fixtures");
+        return parsed.data;
+      }
+    } catch (e) {
+      console.warn("Failed to parse cached live fixtures, refetching...", e);
+    }
+  }
+
+  console.log("[API-Football] Fetching live World Cup 2026 fixtures...");
+  
+  try {
+    // FIFA World Cup League ID = 1, Season = 2026
+    const res = await fetch(`${BASE_URL}/fixtures?league=1&season=2026`, {
+      method: "GET",
+      headers: HEADERS
+    });
+
+    if (!res.ok) throw new Error(`Fixtures fetch failed: ${res.status}`);
+    const data = await res.json();
+
+    if (!data.response || data.response.length === 0) {
+      throw new Error("No World Cup 2026 fixtures found in API-Football");
+    }
+
+    // Map live API results into a list we can merge with client-side predictions
+    const mappedFixtures = data.response.map((f) => {
+      const homeName = normalizeApiTeamName(f.teams.home.name);
+      const awayName = normalizeApiTeamName(f.teams.away.name);
+      const status = f.fixture.status.short;
+
+      // Check if the match is finished or currently live
+      const isPlayed = ["FT", "AET", "PEN", "1H", "2H", "HT"].includes(status);
+      const statusText = status === "FT" ? "Final" : ["1H", "2H", "HT"].includes(status) ? "Live" : "";
+
+      return {
+        apiFixtureId: f.fixture.id,
+        teamHome: homeName,
+        teamAway: awayName,
+        homeScore: isPlayed && f.goals.home !== null ? f.goals.home.toString() : "",
+        awayScore: isPlayed && f.goals.away !== null ? f.goals.away.toString() : "",
+        isRealResult: isPlayed,
+        statusText: statusText,
+        venue: f.fixture.venue.name || "TBD Stadium"
+      };
+    });
+
+    // Cache the resolved result
+    localStorage.setItem(cacheKey, JSON.stringify({
+      data: mappedFixtures,
+      timestamp: Date.now()
+    }));
+
+    return mappedFixtures;
+  } catch (error) {
+    console.error("[API-Football] Error fetching live fixtures:", error);
+    return null;
   }
 };

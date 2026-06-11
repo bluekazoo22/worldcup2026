@@ -3,7 +3,7 @@ import { getFlagUrl, GROUPS } from '../data/tournamentData';
 import { useTheme } from '../context/ThemeContext';
 import { Star, ShieldAlert, Award } from 'lucide-react';
 
-export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClick }) {
+export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClick, lastRefreshed }) {
   const { activeTheme } = useTheme();
   const [activeGroup, setActiveGroup] = useState("A");
 
@@ -13,6 +13,9 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
   const groupMatches = matches.filter((m) => m.group === activeGroup);
 
   const handleQuickPredict = (matchId, outcome) => {
+    const match = matches.find(m => m.id === matchId);
+    if (match && match.isRealResult) return;
+
     // Presets for quick scoring
     let home = 0;
     let away = 0;
@@ -35,6 +38,7 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
     const cleanValue = value.replace(/[^0-9]/g, '').slice(0, 2);
     const match = matches.find(m => m.id === matchId);
     if (match) {
+      if (match.isRealResult) return;
       if (isHome) {
         onUpdateMatchScore(matchId, cleanValue, match.awayScore);
       } else {
@@ -45,24 +49,33 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
 
   return (
     <div className="space-y-6">
-      {/* Group Selector Navigation */}
-      <div className="flex overflow-x-auto pb-3 gap-2 scrollbar-thin border-b border-white/5">
-        {groupsList.map((g) => {
-          const isActive = activeGroup === g;
-          return (
-            <button
-              key={g}
-              onClick={() => setActiveGroup(g)}
-              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
-                isActive
-                  ? `${activeTheme.accentColor} text-white shadow-lg`
-                  : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-              }`}
-            >
-              Group {g}
-            </button>
-          );
-        })}
+      {/* Group Selector Navigation & Live Sync Status */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-3 gap-3">
+        <div className="flex overflow-x-auto pb-1 gap-2 scrollbar-thin">
+          {groupsList.map((g) => {
+            const isActive = activeGroup === g;
+            return (
+              <button
+                key={g}
+                onClick={() => setActiveGroup(g)}
+                className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-300 ${
+                  isActive
+                    ? `${activeTheme.accentColor} text-white shadow-lg`
+                    : 'bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                }`}
+              >
+                Group {g}
+              </button>
+            );
+          })}
+        </div>
+
+        {lastRefreshed && (
+          <div className="flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl text-[10px] font-bold text-emerald-400 whitespace-nowrap">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Live Sync Active ({lastRefreshed})</span>
+          </div>
+        )}
       </div>
 
       {/* Matches Grid */}
@@ -125,8 +138,13 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
                     inputMode="numeric"
                     placeholder="-"
                     value={match.homeScore}
+                    disabled={match.isRealResult}
                     onChange={(e) => handleInputChange(match.id, true, e.target.value)}
-                    className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-center font-mono text-xl font-bold text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                    className={`w-12 h-12 rounded-xl text-center font-mono text-xl font-bold text-white focus:outline-none transition-all ${
+                      match.isRealResult
+                        ? "bg-slate-950/50 border border-slate-900/60 opacity-60 cursor-not-allowed text-slate-400 font-black"
+                        : "bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                    }`}
                   />
                   <span className="text-slate-600 font-extrabold text-lg">:</span>
                   <input
@@ -135,8 +153,13 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
                     inputMode="numeric"
                     placeholder="-"
                     value={match.awayScore}
+                    disabled={match.isRealResult}
                     onChange={(e) => handleInputChange(match.id, false, e.target.value)}
-                    className="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-center font-mono text-xl font-bold text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                    className={`w-12 h-12 rounded-xl text-center font-mono text-xl font-bold text-white focus:outline-none transition-all ${
+                      match.isRealResult
+                        ? "bg-slate-950/50 border border-slate-900/60 opacity-60 cursor-not-allowed text-slate-400 font-black"
+                        : "bg-slate-900 border border-slate-800 hover:border-slate-700 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                    }`}
                   />
                 </div>
 
@@ -159,38 +182,61 @@ export default function MatchPredictor({ matches, onUpdateMatchScore, onFlagClic
                 </div>
               </div>
 
-              {/* Quick Actions Panel */}
-              <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between gap-1">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
-                  Quick Pick:
-                </span>
-                <div className="flex gap-1.5">
-                  <button
-                    onClick={() => handleQuickPredict(match.id, 'home')}
-                    className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
-                  >
-                    1 (Win)
-                  </button>
-                  <button
-                    onClick={() => handleQuickPredict(match.id, 'draw')}
-                    className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
-                  >
-                    X (Draw)
-                  </button>
-                  <button
-                    onClick={() => handleQuickPredict(match.id, 'away')}
-                    className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
-                  >
-                    2 (Win)
-                  </button>
+              {/* Info & Quick Actions Panel */}
+              {match.isRealResult ? (
+                <div className="mt-5 pt-4 border-t border-white/5 flex items-center justify-between text-[10px] text-slate-400">
+                  <span className="font-bold uppercase tracking-wider text-slate-500">Venue:</span>
+                  <span className="truncate max-w-[150px] font-mono text-[9px]">{match.venue}</span>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-5 pt-4 border-t border-white/5 flex flex-col space-y-2">
+                  <div className="flex items-center justify-between text-[9px] text-slate-500">
+                    <span className="font-semibold">{match.date} • {match.time}</span>
+                    <span className="truncate max-w-[120px] font-semibold">{match.venue}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-1 border-t border-white/5 pt-2">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">
+                      Quick Pick:
+                    </span>
+                    <div className="flex gap-1.5">
+                      <button
+                        onClick={() => handleQuickPredict(match.id, 'home')}
+                        className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
+                      >
+                        1 (Win)
+                      </button>
+                      <button
+                        onClick={() => handleQuickPredict(match.id, 'draw')}
+                        className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
+                      >
+                        X (Draw)
+                      </button>
+                      <button
+                        onClick={() => handleQuickPredict(match.id, 'away')}
+                        className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider rounded-md border border-slate-800 hover:border-slate-600 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white transition-colors"
+                      >
+                        2 (Win)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-              {/* Simulated Prediction result overlay */}
-              {isPredicted && (
-                <div className="absolute top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black tracking-widest text-emerald-400 uppercase">
-                  {resultText}
+              {/* Real result overlay badge OR simulated prediction result */}
+              {match.isRealResult ? (
+                <div className={`absolute top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full border text-[8px] font-black tracking-widest uppercase ${
+                  match.statusText === "Live"
+                    ? "bg-red-500/10 border-red-500/30 text-red-400 animate-pulse"
+                    : "bg-slate-950/80 border-slate-800 text-slate-400 animate-fade-in"
+                }`}>
+                  {match.statusText || "FINAL"}
                 </div>
+              ) : (
+                isPredicted && (
+                  <div className="absolute top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[8px] font-black tracking-widest text-emerald-400 uppercase">
+                    {resultText}
+                  </div>
+                )
               )}
             </div>
           );
