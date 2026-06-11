@@ -133,25 +133,26 @@ export const COUNTRIES = {
   }
 };
 
-// 48 teams grouped into 12 groups (A to L)
+// 48 teams grouped into 12 groups (A to L) - Restructured to match official 2026 World Cup Groupings
 export const GROUPS = {
-  A: { name: "Group A", teams: ["Canada", "Colombia", "Nigeria", "Austria"] },
-  B: { name: "Group B", teams: ["Mexico", "Switzerland", "Egypt", "Australia"] },
-  C: { name: "Group C", teams: ["USA", "Uruguay", "Morocco", "South Korea"] },
-  D: { name: "Group D", teams: ["Brazil", "Poland", "Senegal", "Saudi Arabia"] },
-  E: { name: "Group E", teams: ["Argentina", "Denmark", "Algeria", "Japan"] },
-  F: { name: "Group F", teams: ["France", "Croatia", "Tunisia", "Costa Rica"] },
-  G: { name: "Group G", teams: ["England", "Peru", "Ghana", "Iran"] },
-  H: { name: "Group H", teams: ["Spain", "Sweden", "Cameroon", "United Arab Emirates"] },
-  I: { name: "Group I", teams: ["Portugal", "Netherlands", "Mali", "Chile"] },
-  J: { name: "Group J", teams: ["Italy", "Belgium", "Honduras", "Iraq"] },
-  K: { name: "Group K", teams: ["Germany", "Ecuador", "Jamaica", "Qatar"] },
-  L: { name: "Group L", teams: ["Ukraine", "Turkey", "Wales", "Norway"] }
+  A: { name: "Group A", teams: ["Mexico", "South Africa", "South Korea", "Czechia"] },
+  B: { name: "Group B", teams: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"] },
+  C: { name: "Group C", teams: ["Brazil", "Morocco", "Haiti", "Scotland"] },
+  D: { name: "Group D", teams: ["United States", "Paraguay", "Australia", "Türkiye"] },
+  E: { name: "Group E", teams: ["Germany", "Curaçao", "Ivory Coast", "Ecuador"] },
+  F: { name: "Group F", teams: ["Netherlands", "Japan", "Sweden", "Tunisia"] },
+  G: { name: "Group G", teams: ["Belgium", "Egypt", "Iran", "New Zealand"] },
+  H: { name: "Group H", teams: ["Spain", "Cape Verde", "Saudi Arabia", "Uruguay"] },
+  I: { name: "Group I", teams: ["France", "Senegal", "Iraq", "Norway"] },
+  J: { name: "Group J", teams: ["Argentina", "Algeria", "Austria", "Jordan"] },
+  K: { name: "Group K", teams: ["Portugal", "DR Congo", "Uzbekistan", "Colombia"] },
+  L: { name: "Group L", teams: ["England", "Croatia", "Ghana", "Panama"] }
 };
 
 // 100+ National Teams database for allegiance selection
 export const ALL_NATIONS = [
   { name: "USA", code: "us", emoji: "🇺🇸" },
+  { name: "United States", code: "us", emoji: "🇺🇸" },
   { name: "Mexico", code: "mx", emoji: "🇲🇽" },
   { name: "Canada", code: "ca", emoji: "🇨🇦" },
   { name: "Japan", code: "jp", emoji: "🇯🇵" },
@@ -197,15 +198,28 @@ export const ALL_NATIONS = [
   { name: "Qatar", code: "qa", emoji: "🇶🇦" },
   { name: "Ukraine", code: "ua", emoji: "🇺🇦" },
   { name: "Turkey", code: "tr", emoji: "🇹🇷" },
+  { name: "Türkiye", code: "tr", emoji: "🇹🇷" },
   { name: "Wales", code: "gb-wls", emoji: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
   { name: "Norway", code: "no", emoji: "🇳🇴" },
-  
-  // Non-qualified / Other FIFA members (to make it 100+)
-  { name: "Greece", code: "gr", emoji: "🇬🇷" },
+  { name: "Curaçao", code: "cw", emoji: "🇨🇼" },
+  { name: "Curacao", code: "cw", emoji: "🇨🇼" },
+  { name: "Ivory Coast", code: "ci", emoji: "🇨🇮" },
+  { name: "South Africa", code: "za", emoji: "🇿🇦" },
+  { name: "Cape Verde", code: "cv", emoji: "🇨🇻" },
+  { name: "Bosnia and Herzegovina", code: "ba", emoji: "🇧🇦" },
+  { name: "DR Congo", code: "cd", emoji: "🇨🇩" },
+  { name: "Uzbekistan", code: "uz", emoji: "🇺🇿" },
+  { name: "Panama", code: "pa", emoji: "🇵🇦" },
+  { name: "Haiti", code: "ht", emoji: "🇭🇹" },
   { name: "Scotland", code: "gb-sct", emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+  { name: "Jordan", code: "jo", emoji: "🇯🇴" },
+  { name: "Czechia", code: "cz", emoji: "🇨🇿" },
+  { name: "New Zealand", code: "nz", emoji: "🇳🇿" },
+  
+  // Extra nations to support 100+ selection
+  { name: "Greece", code: "gr", emoji: "🇬🇷" },
   { name: "Ireland", code: "ie", emoji: "🇮🇪" },
   { name: "Northern Ireland", code: "gb-nir", emoji: "🇬🇧" },
-  { name: "New Zealand", code: "nz", emoji: "🇳🇿" },
   { name: "China", code: "cn", emoji: "🇨🇳" },
   { name: "India", code: "in", emoji: "🇮🇳" },
   { name: "Vietnam", code: "vn", emoji: "🇻🇳" },
@@ -214,9 +228,6 @@ export const ALL_NATIONS = [
   { name: "Malaysia", code: "my", emoji: "🇲🇾" },
   { name: "Indonesia", code: "id", emoji: "🇮🇩" },
   { name: "Philippines", code: "ph", emoji: "🇵🇭" },
-  { name: "South Africa", code: "za", emoji: "🇿🇦" },
-  { name: "Ivory Coast", code: "ci", emoji: "🇨🇮" },
-  { name: "Czechia", code: "cz", emoji: "🇨🇿" },
   { name: "Slovakia", code: "sk", emoji: "🇸🇰" },
   { name: "Hungary", code: "hu", emoji: "🇭🇺" },
   { name: "Romania", code: "ro", emoji: "🇷🇴" },
@@ -228,22 +239,16 @@ export const ALL_NATIONS = [
   { name: "Bolivia", code: "bo", emoji: "🇧🇴" },
   { name: "Paraguay", code: "py", emoji: "🇵🇾" },
   { name: "Venezuela", code: "ve", emoji: "🇻🇪" },
-  { name: "Panama", code: "pa", emoji: "🇵🇦" },
-  { name: "Haiti", code: "ht", emoji: "🇭🇹" },
   { name: "El Salvador", code: "sv", emoji: "🇸🇻" },
-  { name: "Honduras", code: "hn", emoji: "🇭🇳" },
   { name: "Guatemala", code: "gt", emoji: "🇬🇹" },
   { name: "Trinidad and Tobago", code: "tt", emoji: "🇹🇹" },
-  { name: "New Zealand", code: "nz", emoji: "🇳🇿" },
   { name: "Fiji", code: "fj", emoji: "🇫🇯" },
   { name: "Angola", code: "ao", emoji: "🇦🇴" },
-  { name: "DR Congo", code: "cd", emoji: "🇨🇩" },
   { name: "Zambia", code: "zm", emoji: "🇿🇲" },
   { name: "Kenya", code: "ke", emoji: "🇰🇪" },
   { name: "Uganda", code: "ug", emoji: "🇺🇬" },
   { name: "Jordan", code: "jo", emoji: "🇯🇴" },
   { name: "Syria", code: "sy", emoji: "🇸🇾" },
-  { name: "Uzbekistan", code: "uz", emoji: "🇺🇿" },
   { name: "Albania", code: "al", emoji: "🇦🇱" },
   { name: "North Macedonia", code: "mk", emoji: "🇲🇰" },
   { name: "Bosnia and Herzegovina", code: "ba", emoji: "🇧🇦" },
@@ -266,54 +271,140 @@ export const getFlagUrl = (countryName) => {
     return `https://flagcdn.com/w80/${custom.code}.png`;
   }
   
-  // Look up in ALL_NATIONS
-  const nation = ALL_NATIONS.find(n => n.name.toLowerCase() === countryName.toLowerCase());
+  // Look up in ALL_NATIONS mapping
+  const matchName = countryName === "United States" ? "USA" : countryName;
+  const nation = ALL_NATIONS.find(n => n.name.toLowerCase() === matchName.toLowerCase());
   if (nation) {
     return `https://flagcdn.com/w80/${nation.code}.png`;
   }
 
-  return `https://flagcdn.com/w80/us.png`;
+  // Common manual fallbacks for spelling discrepancies
+  const fallbackMappings = {
+    "United States": "us", "Paraguay": "py", "Morocco": "ma", "Scotland": "gb-sct",
+    "Türkiye": "tr", "Turkey": "tr", "Germany": "de", "Curaçao": "cw", "Curacao": "cw",
+    "Ivory Coast": "ci", "Ecuador": "ec", "Japan": "jp", "Tunisia": "tn", "Sweden": "se",
+    "Cape Verde": "cv", "Saudi Arabia": "sa", "Uruguay": "uy", "Egypt": "eg", "Iran": "ir",
+    "New Zealand": "nz", "Senegal": "sn", "Iraq": "iq", "Norway": "no", "Algeria": "dz",
+    "Austria": "at", "Jordan": "jo", "DR Congo": "cd", "Croatia": "hr", "Ghana": "gh",
+    "Panama": "pa", "Colombia": "co", "Uzbekistan": "uz"
+  };
+  const code = fallbackMappings[countryName] || "us";
+  return `https://flagcdn.com/w80/${code}.png`;
 };
 
-// Pre-scheduled Matches for all 12 groups (6 matches per group = 72 matches total)
-const generateMatches = () => {
-  const matches = [];
-  let id = 1;
-  
-  Object.keys(GROUPS).forEach((groupKey) => {
-    const t = GROUPS[groupKey].teams;
-    const fixtures = [
-      { home: t[0], away: t[1], round: 1 },
-      { home: t[2], away: t[3], round: 1 },
-      { home: t[0], away: t[2], round: 2 },
-      { home: t[1], away: t[3], round: 2 },
-      { home: t[0], away: t[3], round: 3 },
-      { home: t[1], away: t[2], round: 3 }
-    ];
-    
-    fixtures.forEach((f) => {
-      matches.push({
-        id: id++,
-        group: groupKey,
-        round: f.round,
-        teamHome: f.home,
-        teamAway: f.away,
-        homeScore: "",
-        awayScore: "",
-        predicted: false
-      });
-    });
-  });
-  
-  return matches;
-};
+// Official 72 Group stage fixtures
+export const INITIAL_MATCHES = [
+  // Thursday, June 11
+  { id: 1, group: "A", round: 1, teamHome: "Mexico", teamAway: "South Africa", date: "Thursday, June 11", time: "3:00 PM ET", venue: "Mexico City", homeScore: "", awayScore: "", predicted: false },
+  { id: 2, group: "A", round: 1, teamHome: "South Korea", teamAway: "Czechia", date: "Thursday, June 11", time: "10:00 PM ET", venue: "Zapopan, Mexico", homeScore: "", awayScore: "", predicted: false },
 
-export const INITIAL_MATCHES = generateMatches();
+  // Friday, June 12
+  { id: 3, group: "B", round: 1, teamHome: "Canada", teamAway: "Bosnia and Herzegovina", date: "Friday, June 12", time: "3:00 PM ET", venue: "Toronto", homeScore: "", awayScore: "", predicted: false },
+  { id: 4, group: "D", round: 1, teamHome: "United States", teamAway: "Paraguay", date: "Friday, June 12", time: "9:00 PM ET", venue: "Inglewood, Calif.", homeScore: "", awayScore: "", predicted: false },
 
-// Mock Roster Details matching API-Football schemas
+  // Saturday, June 13
+  { id: 5, group: "B", round: 1, teamHome: "Qatar", teamAway: "Switzerland", date: "Saturday, June 13", time: "3:00 PM ET", venue: "Santa Clara, Calif.", homeScore: "", awayScore: "", predicted: false },
+  { id: 6, group: "C", round: 1, teamHome: "Brazil", teamAway: "Morocco", date: "Saturday, June 13", time: "6:00 PM ET", venue: "East Rutherford, New Jersey", homeScore: "", awayScore: "", predicted: false },
+  { id: 7, group: "C", round: 1, teamHome: "Haiti", teamAway: "Scotland", date: "Saturday, June 13", time: "9:00 PM ET", venue: "Foxborough, Mass.", homeScore: "", awayScore: "", predicted: false },
+  { id: 8, group: "D", round: 1, teamHome: "Australia", teamAway: "Türkiye", date: "Saturday, June 13", time: "12:00 AM ET (June 14)", venue: "Vancouver, Canada", homeScore: "", awayScore: "", predicted: false },
+
+  // Sunday, June 14
+  { id: 9, group: "E", round: 1, teamHome: "Germany", teamAway: "Curaçao", date: "Sunday, June 14", time: "1:00 PM ET", venue: "Houston", homeScore: "", awayScore: "", predicted: false },
+  { id: 10, group: "F", round: 1, teamHome: "Netherlands", teamAway: "Japan", date: "Sunday, June 14", time: "4:00 PM ET", venue: "Arlington, Texas", homeScore: "", awayScore: "", predicted: false },
+  { id: 11, group: "E", round: 1, teamHome: "Ivory Coast", teamAway: "Ecuador", date: "Sunday, June 14", time: "7:00 PM ET", venue: "Philadelphia", homeScore: "", awayScore: "", predicted: false },
+  { id: 12, group: "F", round: 1, teamHome: "Sweden", teamAway: "Tunisia", date: "Sunday, June 14", time: "10:00 PM ET", venue: "Guadalupe, Mexico", homeScore: "", awayScore: "", predicted: false },
+
+  // Monday, June 15
+  { id: 13, group: "H", round: 1, teamHome: "Spain", teamAway: "Cape Verde", date: "Monday, June 15", time: "1:00 PM ET", venue: "Atlanta", homeScore: "", awayScore: "", predicted: false },
+  { id: 14, group: "G", round: 1, teamHome: "Belgium", teamAway: "Egypt", date: "Monday, June 15", time: "6:00 PM ET", venue: "Seattle", homeScore: "", awayScore: "", predicted: false },
+  { id: 15, group: "H", round: 1, teamHome: "Saudi Arabia", teamAway: "Uruguay", date: "Monday, June 15", time: "6:00 PM ET", venue: "Miami Gardens, Fla.", homeScore: "", awayScore: "", predicted: false },
+  { id: 16, group: "G", round: 1, teamHome: "Iran", teamAway: "New Zealand", date: "Monday, June 15", time: "12:00 AM ET (June 16)", venue: "Inglewood, Calif.", homeScore: "", awayScore: "", predicted: false },
+
+  // Tuesday, June 16
+  { id: 17, group: "I", round: 1, teamHome: "France", teamAway: "Senegal", date: "Tuesday, June 16", time: "3:00 PM ET", venue: "East Rutherford, N.J.", homeScore: "", awayScore: "", predicted: false },
+  { id: 18, group: "I", round: 1, teamHome: "Iraq", teamAway: "Norway", date: "Tuesday, June 16", time: "6:00 PM ET", venue: "Foxborough, Mass.", homeScore: "", awayScore: "", predicted: false },
+  { id: 19, group: "J", round: 1, teamHome: "Argentina", teamAway: "Algeria", date: "Tuesday, June 16", time: "9:00 PM ET", venue: "Kansas City, Mo.", homeScore: "", awayScore: "", predicted: false },
+  { id: 20, group: "J", round: 1, teamHome: "Austria", teamAway: "Jordan", date: "Tuesday, June 16", time: "12:00 AM ET (June 17)", venue: "Santa Clara, Calif.", homeScore: "", awayScore: "", predicted: false },
+
+  // Wednesday, June 17
+  { id: 21, group: "K", round: 1, teamHome: "Portugal", teamAway: "DR Congo", date: "Wednesday, June 17", time: "1:00 PM ET", venue: "Houston", homeScore: "", awayScore: "", predicted: false },
+  { id: 22, group: "L", round: 1, teamHome: "England", teamAway: "Croatia", date: "Wednesday, June 17", time: "4:00 PM ET", venue: "Arlington, Texas", homeScore: "", awayScore: "", predicted: false },
+  { id: 23, group: "L", round: 1, teamHome: "Ghana", teamAway: "Panama", date: "Wednesday, June 17", time: "7:00 PM ET", venue: "Toronto", homeScore: "", awayScore: "", predicted: false },
+  { id: 24, group: "K", round: 1, teamHome: "Uzbekistan", teamAway: "Colombia", date: "Wednesday, June 17", time: "10:00 PM ET", venue: "Mexico City", homeScore: "", awayScore: "", predicted: false },
+
+  // Thursday, June 18
+  { id: 25, group: "A", round: 2, teamHome: "Czechia", teamAway: "South Africa", date: "Thursday, June 18", time: "12:00 PM ET", venue: "Atlanta", homeScore: "", awayScore: "", predicted: false },
+  { id: 26, group: "B", round: 2, teamHome: "Switzerland", teamAway: "Bosnia and Herzegovina", date: "Thursday, June 18", time: "3:00 PM ET", venue: "Inglewood, Calif.", homeScore: "", awayScore: "", predicted: false },
+  { id: 27, group: "B", round: 2, teamHome: "Canada", teamAway: "Qatar", date: "Thursday, June 18", time: "6:00 PM ET", venue: "Vancouver, Canada", homeScore: "", awayScore: "", predicted: false },
+  { id: 28, group: "A", round: 2, teamHome: "Mexico", teamAway: "South Korea", date: "Thursday, June 18", time: "11:00 PM ET", venue: "Zapopan, Mexico", homeScore: "", awayScore: "", predicted: false },
+
+  // Friday, June 19
+  { id: 29, group: "D", round: 2, teamHome: "United States", teamAway: "Australia", date: "Friday, June 19", time: "3:00 PM ET", venue: "Seattle", homeScore: "", awayScore: "", predicted: false },
+  { id: 30, group: "C", round: 2, teamHome: "Scotland", teamAway: "Morocco", date: "Friday, June 19", time: "6:00 PM ET", venue: "Foxborough, Mass.", homeScore: "", awayScore: "", predicted: false },
+  { id: 31, group: "C", round: 2, teamHome: "Brazil", teamAway: "Haiti", date: "Friday, June 19", time: "9:00 PM ET", venue: "Philadelphia", homeScore: "", awayScore: "", predicted: false },
+  { id: 32, group: "D", round: 2, teamHome: "Türkiye", teamAway: "Paraguay", date: "Friday, June 19", time: "12:00 AM ET (June 20)", venue: "Santa Clara, Calif.", homeScore: "", awayScore: "", predicted: false },
+
+  // Saturday, June 20
+  { id: 33, group: "F", round: 2, teamHome: "Netherlands", teamAway: "Sweden", date: "Saturday, June 20", time: "1:00 PM ET", venue: "Houston", homeScore: "", awayScore: "", predicted: false },
+  { id: 34, group: "E", round: 2, teamHome: "Germany", teamAway: "Ivory Coast", date: "Saturday, June 20", time: "4:00 PM ET", venue: "Toronto", homeScore: "", awayScore: "", predicted: false },
+  { id: 35, group: "E", round: 2, teamHome: "Ecuador", teamAway: "Curaçao", date: "Saturday, June 20", time: "8:00 PM ET", venue: "Kansas City, Mo.", homeScore: "", awayScore: "", predicted: false },
+  { id: 36, group: "F", round: 2, teamHome: "Tunisia", teamAway: "Japan", date: "Saturday, June 20", time: "12:00 AM ET (June 21)", venue: "Guadalupe, Mexico", homeScore: "", awayScore: "", predicted: false },
+
+  // Sunday, June 21
+  { id: 37, group: "H", round: 2, teamHome: "Spain", teamAway: "Saudi Arabia", date: "Sunday, June 21", time: "12:00 PM ET", venue: "Atlanta", homeScore: "", awayScore: "", predicted: false },
+  { id: 38, group: "G", round: 2, teamHome: "Belgium", teamAway: "Iran", date: "Sunday, June 21", time: "3:00 PM ET", venue: "Inglewood, Calif.", homeScore: "", awayScore: "", predicted: false },
+  { id: 39, group: "H", round: 2, teamHome: "Uruguay", teamAway: "Cape Verde", date: "Sunday, June 21", time: "6:00 PM ET", venue: "Miami Gardens, Fla.", homeScore: "", awayScore: "", predicted: false },
+  { id: 40, group: "G", round: 2, teamHome: "New Zealand", teamAway: "Egypt", date: "Sunday, June 21", time: "9:00 PM ET", venue: "Vancouver", homeScore: "", awayScore: "", predicted: false },
+
+  // Monday, June 22
+  { id: 41, group: "J", round: 2, teamHome: "Argentina", teamAway: "Austria", date: "Monday, June 22", time: "1:00 PM ET", venue: "Arlington, Texas", homeScore: "", awayScore: "", predicted: false },
+  { id: 42, group: "I", round: 2, teamHome: "France", teamAway: "Iraq", date: "Monday, June 22", time: "5:00 PM ET", venue: "Philadelphia", homeScore: "", awayScore: "", predicted: false },
+  { id: 43, group: "I", round: 2, teamHome: "Norway", teamAway: "Senegal", date: "Monday, June 22", time: "8:00 PM ET", venue: "East Rutherford, N.J.", homeScore: "", awayScore: "", predicted: false },
+  { id: 44, group: "J", round: 2, teamHome: "Jordan", teamAway: "Algeria", date: "Monday, June 22", time: "11:00 PM ET", venue: "Santa Clara, Calif.", homeScore: "", awayScore: "", predicted: false },
+
+  // Tuesday, June 23
+  { id: 45, group: "K", round: 2, teamHome: "Portugal", teamAway: "Uzbekistan", date: "Tuesday, June 23", time: "1:00 PM ET", venue: "Houston", homeScore: "", awayScore: "", predicted: false },
+  { id: 46, group: "L", round: 2, teamHome: "England", teamAway: "Ghana", date: "Tuesday, June 23", time: "4:00 PM ET", venue: "Foxborough, Mass.", homeScore: "", awayScore: "", predicted: false },
+  { id: 47, group: "L", round: 2, teamHome: "Panama", teamAway: "Croatia", date: "Tuesday, June 23", time: "7:00 PM ET", venue: "Toronto", homeScore: "", awayScore: "", predicted: false },
+  { id: 48, group: "K", round: 2, teamHome: "Colombia", teamAway: "DR Congo", date: "Tuesday, June 23", time: "10:00 PM ET", venue: "Zapopan, Mexico", homeScore: "", awayScore: "", predicted: false },
+
+  // Wednesday, June 24
+  { id: 49, group: "B", round: 3, teamHome: "Switzerland", teamAway: "Canada", date: "Wednesday, June 24", time: "3:00 PM ET", venue: "Vancouver, Canada", homeScore: "", awayScore: "", predicted: false },
+  { id: 50, group: "B", round: 3, teamHome: "Bosnia and Herzegovina", teamAway: "Qatar", date: "Wednesday, June 24", time: "3:00 PM ET", venue: "Seattle", homeScore: "", awayScore: "", predicted: false },
+  { id: 51, group: "C", round: 3, teamHome: "Scotland", teamAway: "Brazil", date: "Wednesday, June 24", time: "6:00 PM ET", venue: "Miami Gardens, Fla.", homeScore: "", awayScore: "", predicted: false },
+  { id: 52, group: "C", round: 3, teamHome: "Morocco", teamAway: "Haiti", date: "Wednesday, June 24", time: "6:00 PM ET", venue: "Atlanta", homeScore: "", awayScore: "", predicted: false },
+  { id: 53, group: "A", round: 3, teamHome: "Czechia", teamAway: "Mexico", date: "Wednesday, June 24", time: "9:00 PM ET", venue: "Mexico City", homeScore: "", awayScore: "", predicted: false },
+  { id: 54, group: "A", round: 3, teamHome: "South Africa", teamAway: "South Korea", date: "Wednesday, June 24", time: "9:00 PM ET", venue: "Guadalupe, Mexico", homeScore: "", awayScore: "", predicted: false },
+
+  // Thursday, June 25
+  { id: 55, group: "E", round: 3, teamHome: "Ecuador", teamAway: "Germany", date: "Thursday, June 25", time: "4:00 PM ET", venue: "East Rutherford, N.J.", homeScore: "", awayScore: "", predicted: false },
+  { id: 56, group: "E", round: 3, teamHome: "Curaçao", teamAway: "Ivory Coast", date: "Thursday, June 25", time: "4:00 PM ET", venue: "Philadelphia", homeScore: "", awayScore: "", predicted: false },
+  { id: 57, group: "F", round: 3, teamHome: "Japan", teamAway: "Sweden", date: "Thursday, June 25", time: "7:00 PM ET", venue: "Arlington, Texas", homeScore: "", awayScore: "", predicted: false },
+  { id: 58, group: "F", round: 3, teamHome: "Tunisia", teamAway: "Netherlands", date: "Thursday, June 25", time: "7:00 PM ET", venue: "Kansas City, Mo.", homeScore: "", awayScore: "", predicted: false },
+  { id: 59, group: "D", round: 3, teamHome: "Türkiye", teamAway: "United States", date: "Thursday, June 25", time: "10:00 PM ET", venue: "Inglewood, Calif.", homeScore: "", awayScore: "", predicted: false },
+  { id: 60, group: "D", round: 3, teamHome: "Paraguay", teamAway: "Australia", date: "Thursday, June 25", time: "10:00 PM ET", venue: "Santa Clara, Calif.", homeScore: "", awayScore: "", predicted: false },
+
+  // Friday, June 26
+  { id: 61, group: "I", round: 3, teamHome: "Norway", teamAway: "France", date: "Friday, June 26", time: "3:00 PM ET", venue: "Foxborough, Mass.", homeScore: "", awayScore: "", predicted: false },
+  { id: 62, group: "I", round: 3, teamHome: "Senegal", teamAway: "Iraq", date: "Friday, June 26", time: "3:00 PM ET", venue: "Toronto", homeScore: "", awayScore: "", predicted: false },
+  { id: 63, group: "H", round: 3, teamHome: "Cape Verde", teamAway: "Saudi Arabia", date: "Friday, June 26", time: "8:00 PM ET", venue: "Houston", homeScore: "", awayScore: "", predicted: false },
+  { id: 64, group: "H", round: 3, teamHome: "Uruguay", teamAway: "Spain", date: "Friday, June 26", time: "8:00 PM ET", venue: "Zapopan, Mexico", homeScore: "", awayScore: "", predicted: false },
+  { id: 65, group: "G", round: 3, teamHome: "Egypt", teamAway: "Iran", date: "Friday, June 26", time: "11:00 PM ET", venue: "Seattle", homeScore: "", awayScore: "", predicted: false },
+  { id: 66, group: "G", round: 3, teamHome: "New Zealand", teamAway: "Belgium", date: "Friday, June 26", time: "11:00 PM ET", venue: "Vancouver, Canada", homeScore: "", awayScore: "", predicted: false },
+
+  // Saturday, June 27
+  { id: 67, group: "L", round: 3, teamHome: "Panama", teamAway: "England", date: "Saturday, June 27", time: "5:00 PM ET", venue: "East Rutherford, N.J.", homeScore: "", awayScore: "", predicted: false },
+  { id: 68, group: "L", round: 3, teamHome: "Croatia", teamAway: "Ghana", date: "Saturday, June 27", time: "5:00 PM ET", venue: "Philadelphia", homeScore: "", awayScore: "", predicted: false },
+  { id: 69, group: "K", round: 3, teamHome: "Colombia", teamAway: "Portugal", date: "Saturday, June 27", time: "7:30 PM ET", venue: "Miami Gardens, Fla.", homeScore: "", awayScore: "", predicted: false },
+  { id: 70, group: "K", round: 3, teamHome: "DR Congo", teamAway: "Uzbekistan", date: "Saturday, June 27", time: "7:30 PM ET", venue: "Atlanta Stadium", homeScore: "", awayScore: "", predicted: false },
+  { id: 71, group: "J", round: 3, teamHome: "Algeria", teamAway: "Austria", date: "Saturday, June 27", time: "10:00 PM ET", venue: "Kansas City, Mo.", homeScore: "", awayScore: "", predicted: false },
+  { id: 72, group: "J", round: 3, teamHome: "Jordan", teamAway: "Argentina", date: "Saturday, June 27", time: "10:00 PM ET", venue: "Arlington, Texas", homeScore: "", awayScore: "", predicted: false }
+];
+
+// Mock squad details structured for drawer profiles
 export const ROSTERS = {
-  USA: {
-    team: { id: 1, name: "USA", country: "United States", founded: 1913, logo: "https://flagcdn.com/w80/us.png", fifaRank: 11, manager: "Mauricio Pochettino", keyPlayer: "Christian Pulisic" },
+  "United States": {
+    team: { id: 1, name: "United States", country: "United States", founded: 1913, logo: "https://flagcdn.com/w80/us.png", fifaRank: 11, manager: "Mauricio Pochettino", keyPlayer: "Christian Pulisic" },
     recentForm: ["W", "D", "W", "L", "W"],
     topScorers: [
       { name: "Christian Pulisic", goals: 5, position: "Attacker" },
@@ -325,21 +416,36 @@ export const ROSTERS = {
       { id: 108, name: "Christian Pulisic", age: 27, number: 10, position: "Attacker" }
     ]
   },
-  Japan: {
-    team: { id: 2, name: "Japan", country: "Japan", founded: 1921, logo: "https://flagcdn.com/w80/jp.png", fifaRank: 18, manager: "Hajime Moriyasu", keyPlayer: "Kaoru Mitoma" },
-    recentForm: ["W", "W", "W", "D", "W"],
+  "Mexico": {
+    team: { id: 3, name: "Mexico", country: "Mexico", founded: 1922, logo: "https://flagcdn.com/w80/mx.png", fifaRank: 15, manager: "Javier Aguirre", keyPlayer: "Santiago Giménez" },
+    recentForm: ["D", "W", "L", "W", "W"],
     topScorers: [
-      { name: "Ayase Ueda", goals: 6, position: "Attacker" }
+      { name: "Santiago Giménez", goals: 4, position: "Attacker" },
+      { name: "Luis Chávez", goals: 2, position: "Midfielder" }
     ],
     players: [
-      { id: 201, name: "Zion Suzuki", age: 23, number: 1, position: "Goalkeeper" },
-      { id: 208, name: "Kaoru Mitoma", age: 29, number: 7, position: "Midfielder" }
+      { id: 301, name: "Luis Malagón", age: 29, number: 1, position: "Goalkeeper" },
+      { id: 309, name: "Santiago Giménez", age: 25, number: 9, position: "Attacker" }
+    ]
+  },
+  "Canada": {
+    team: { id: 6, name: "Canada", country: "Canada", founded: 1912, logo: "https://flagcdn.com/w80/ca.png", fifaRank: 40, manager: "Jesse Marsch", keyPlayer: "Alphonso Davies" },
+    recentForm: ["W", "L", "W", "D", "W"],
+    topScorers: [
+      { name: "Jonathan David", goals: 4, position: "Attacker" },
+      { name: "Alphonso Davies", goals: 2, position: "Midfielder" }
+    ],
+    players: [
+      { id: 601, name: "Maxime Crépeau", age: 32, number: 1, position: "Goalkeeper" },
+      { id: 602, name: "Alphonso Davies", age: 25, number: 19, position: "Midfielder" },
+      { id: 603, name: "Jonathan David", age: 26, number: 10, position: "Attacker" }
     ]
   }
 };
 
 export const getTeamRoster = (countryName) => {
-  if (ROSTERS[countryName]) return ROSTERS[countryName];
+  const normName = countryName === "USA" ? "United States" : countryName;
+  if (ROSTERS[normName]) return ROSTERS[normName];
   
   return {
     team: {

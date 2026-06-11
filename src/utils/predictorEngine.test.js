@@ -19,60 +19,59 @@ describe('Predictor Standings Engine tests', () => {
   });
 
   it('should compute points and goals correctly', () => {
-    // Group A has: Canada, Colombia, Nigeria, Austria
+    // Group A has: Mexico, South Africa, South Korea, Czechia
     const mockMatches = [
-      { id: 1, group: "A", teamHome: "Canada", teamAway: "Colombia", homeScore: "2", awayScore: "1" }, // Canada +3 pts, GD +1, GF 2, GA 1
-      { id: 2, group: "A", teamHome: "Nigeria", teamAway: "Austria", homeScore: "1", awayScore: "1" },  // Nigeria +1 pt, Austria +1 pt
-      { id: 3, group: "A", teamHome: "Canada", teamAway: "Nigeria", homeScore: "0", awayScore: "0" },   // Canada +1 pt, Nigeria +1 pt
+      { id: 1, group: "A", teamHome: "Mexico", teamAway: "South Africa", homeScore: "2", awayScore: "1" }, // Mexico +3 pts, GD +1, GF 2, GA 1
+      { id: 2, group: "A", teamHome: "South Korea", teamAway: "Czechia", homeScore: "1", awayScore: "1" },  // South Korea +1 pt, Czechia +1 pt
+      { id: 28, group: "A", teamHome: "Mexico", teamAway: "South Korea", homeScore: "0", awayScore: "0" },  // Mexico +1 pt, South Korea +1 pt
     ];
 
     const { standings } = calculateStandings(mockMatches);
-    const canada = standings.A.find(t => t.name === "Canada");
-    const colombia = standings.A.find(t => t.name === "Colombia");
-    const nigeria = standings.A.find(t => t.name === "Nigeria");
+    const mexico = standings.A.find(t => t.name === "Mexico");
+    const southAfrica = standings.A.find(t => t.name === "South Africa");
+    const southKorea = standings.A.find(t => t.name === "South Korea");
 
-    // Canada stats check
-    expect(canada.played).toBe(2);
-    expect(canada.points).toBe(4); // 3 (win) + 1 (draw)
-    expect(canada.goalsFor).toBe(2);
-    expect(canada.goalsAgainst).toBe(1);
-    expect(canada.goalDifference).toBe(1);
+    // Mexico stats check
+    expect(mexico.played).toBe(2);
+    expect(mexico.points).toBe(4); // 3 (win) + 1 (draw)
+    expect(mexico.goalsFor).toBe(2);
+    expect(mexico.goalsAgainst).toBe(1);
+    expect(mexico.goalDifference).toBe(1);
 
-    // Colombia stats check
-    expect(colombia.played).toBe(1);
-    expect(colombia.points).toBe(0); // loss
-    expect(colombia.goalDifference).toBe(-1);
+    // South Africa stats check
+    expect(southAfrica.played).toBe(1);
+    expect(southAfrica.points).toBe(0); // loss
+    expect(southAfrica.goalDifference).toBe(-1);
 
-    // Nigeria stats check
-    expect(nigeria.played).toBe(2);
-    expect(nigeria.points).toBe(2); // 2 draws
+    // South Korea stats check
+    expect(southKorea.played).toBe(2);
+    expect(southKorea.points).toBe(2); // 2 draws
   });
 
   it('should sort standings using points and goal difference tiebreakers', () => {
-    // Group B: Mexico, Switzerland, Egypt, Australia
+    // Group B: Canada, Bosnia and Herzegovina, Qatar, Switzerland
     const mockMatches = [
-      { id: 7, group: "B", teamHome: "Mexico", teamAway: "Switzerland", homeScore: "3", awayScore: "0" }, // Mexico 3pts GD+3
-      { id: 8, group: "B", teamHome: "Egypt", teamAway: "Australia", homeScore: "2", awayScore: "1" },    // Egypt 3pts GD+1
+      { id: 3, group: "B", teamHome: "Canada", teamAway: "Bosnia and Herzegovina", homeScore: "3", awayScore: "0" }, // Canada 3pts GD+3
+      { id: 5, group: "B", teamHome: "Qatar", teamAway: "Switzerland", homeScore: "2", awayScore: "1" },               // Qatar 3pts GD+1
     ];
 
     const { standings } = calculateStandings(mockMatches);
     
-    // Mexico should be 1st, Egypt 2nd
-    expect(standings.B[0].name).toBe("Mexico");
-    expect(standings.B[1].name).toBe("Egypt");
-    expect(standings.B[2].name).toBe("Australia"); // 0pts GD-1
-    expect(standings.B[3].name).toBe("Switzerland");  // 0pts GD-3
+    // Canada should be 1st, Qatar 2nd
+    expect(standings.B[0].name).toBe("Canada");
+    expect(standings.B[1].name).toBe("Qatar");
+    expect(standings.B[2].name).toBe("Switzerland"); // 0pts GD-1
+    expect(standings.B[3].name).toBe("Bosnia and Herzegovina");  // 0pts GD-3
   });
 
   it('should isolate the top qualifiers and 8 best third place teams', () => {
-    // Generate clean matches where certain groups have strong 3rd place teams
     const mockMatches = [...INITIAL_MATCHES];
     
-    // In Group G: England, Peru, Ghana, Iran. Make Ghana (3rd) win a game -> 3 pts
-    const matchA = mockMatches.find(m => m.group === "G" && m.teamHome === "Ghana" && m.teamAway === "Iran");
+    // In Group G: Belgium, Egypt, Iran, New Zealand. Make New Zealand (3rd) win a game -> 3 pts
+    const matchA = mockMatches.find(m => m.group === "G" && m.teamHome === "Iran" && m.teamAway === "New Zealand");
     if (matchA) {
-      matchA.homeScore = "3";
-      matchA.awayScore = "0"; // Ghana has 3 points
+      matchA.homeScore = "0";
+      matchA.awayScore = "3"; // New Zealand gets 3 points
     }
 
     const { qualifiers } = calculateStandings(mockMatches);
