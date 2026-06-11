@@ -121,7 +121,6 @@ export const COUNTRIES = {
     dynamicGradient: "from-slate-950 via-blue-950/40 to-slate-950",
     themeVariables: { "--glow-color": "rgba(59, 130, 246, 0.4)" }
   },
-  // Default fallback for any other country
   Default: {
     name: "Hub Default",
     code: "un",
@@ -150,6 +149,116 @@ export const GROUPS = {
   L: { name: "Group L", teams: ["Ukraine", "Turkey", "Wales", "Norway"] }
 };
 
+// 100+ National Teams database for allegiance selection
+export const ALL_NATIONS = [
+  { name: "USA", code: "us", emoji: "🇺🇸" },
+  { name: "Mexico", code: "mx", emoji: "🇲🇽" },
+  { name: "Canada", code: "ca", emoji: "🇨🇦" },
+  { name: "Japan", code: "jp", emoji: "🇯🇵" },
+  { name: "Brazil", code: "br", emoji: "🇧🇷" },
+  { name: "Argentina", code: "ar", emoji: "🇦🇷" },
+  { name: "Germany", code: "de", emoji: "🇩🇪" },
+  { name: "Spain", code: "es", emoji: "🇪🇸" },
+  { name: "England", code: "gb-eng", emoji: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+  { name: "France", code: "fr", emoji: "🇫🇷" },
+  { name: "Portugal", code: "pt", emoji: "🇵🇹" },
+  { name: "Italy", code: "it", emoji: "🇮🇹" },
+  { name: "Colombia", code: "co", emoji: "🇨🇴" },
+  { name: "Nigeria", code: "ng", emoji: "🇳🇬" },
+  { name: "Austria", code: "at", emoji: "🇦🇹" },
+  { name: "Switzerland", code: "ch", emoji: "🇨🇭" },
+  { name: "Egypt", code: "eg", emoji: "🇪🇬" },
+  { name: "Australia", code: "au", emoji: "🇦🇺" },
+  { name: "Uruguay", code: "uy", emoji: "🇺🇾" },
+  { name: "Morocco", code: "ma", emoji: "🇲🇦" },
+  { name: "South Korea", code: "kr", emoji: "🇰🇷" },
+  { name: "Poland", code: "pl", emoji: "🇵🇱" },
+  { name: "Senegal", code: "sn", emoji: "🇸🇳" },
+  { name: "Saudi Arabia", code: "sa", emoji: "🇸🇦" },
+  { name: "Denmark", code: "dk", emoji: "🇩🇰" },
+  { name: "Algeria", code: "dz", emoji: "🇩🇿" },
+  { name: "Croatia", code: "hr", emoji: "🇭🇷" },
+  { name: "Tunisia", code: "tn", emoji: "🇹🇳" },
+  { name: "Costa Rica", code: "cr", emoji: "🇨🇷" },
+  { name: "Peru", code: "pe", emoji: "🇵🇪" },
+  { name: "Ghana", code: "gh", emoji: "🇬🇭" },
+  { name: "Iran", code: "ir", emoji: "🇮🇷" },
+  { name: "Sweden", code: "se", emoji: "🇸🇪" },
+  { name: "Cameroon", code: "cm", emoji: "🇨🇲" },
+  { name: "United Arab Emirates", code: "ae", emoji: "🇦🇪" },
+  { name: "Netherlands", code: "nl", emoji: "🇳🇱" },
+  { name: "Mali", code: "ml", emoji: "🇲🇱" },
+  { name: "Chile", code: "cl", emoji: "🇨🇱" },
+  { name: "Belgium", code: "be", emoji: "🇧🇪" },
+  { name: "Honduras", code: "hn", emoji: "🇭🇳" },
+  { name: "Iraq", code: "iq", emoji: "🇮🇶" },
+  { name: "Ecuador", code: "ec", emoji: "🇪🇨" },
+  { name: "Jamaica", code: "jm", emoji: "🇯🇲" },
+  { name: "Qatar", code: "qa", emoji: "🇶🇦" },
+  { name: "Ukraine", code: "ua", emoji: "🇺🇦" },
+  { name: "Turkey", code: "tr", emoji: "🇹🇷" },
+  { name: "Wales", code: "gb-wls", emoji: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
+  { name: "Norway", code: "no", emoji: "🇳🇴" },
+  
+  // Non-qualified / Other FIFA members (to make it 100+)
+  { name: "Greece", code: "gr", emoji: "🇬🇷" },
+  { name: "Scotland", code: "gb-sct", emoji: "🏴󠁧󠁢󠁳󠁣󠁴󠁿" },
+  { name: "Ireland", code: "ie", emoji: "🇮🇪" },
+  { name: "Northern Ireland", code: "gb-nir", emoji: "🇬🇧" },
+  { name: "New Zealand", code: "nz", emoji: "🇳🇿" },
+  { name: "China", code: "cn", emoji: "🇨🇳" },
+  { name: "India", code: "in", emoji: "🇮🇳" },
+  { name: "Vietnam", code: "vn", emoji: "🇻🇳" },
+  { name: "Thailand", code: "th", emoji: "🇹🇭" },
+  { name: "Singapore", code: "sg", emoji: "🇸🇬" },
+  { name: "Malaysia", code: "my", emoji: "🇲🇾" },
+  { name: "Indonesia", code: "id", emoji: "🇮🇩" },
+  { name: "Philippines", code: "ph", emoji: "🇵🇭" },
+  { name: "South Africa", code: "za", emoji: "🇿🇦" },
+  { name: "Ivory Coast", code: "ci", emoji: "🇨🇮" },
+  { name: "Czechia", code: "cz", emoji: "🇨🇿" },
+  { name: "Slovakia", code: "sk", emoji: "🇸🇰" },
+  { name: "Hungary", code: "hu", emoji: "🇭🇺" },
+  { name: "Romania", code: "ro", emoji: "🇷🇴" },
+  { name: "Bulgaria", code: "bg", emoji: "🇧🇬" },
+  { name: "Serbia", code: "rs", emoji: "🇷🇸" },
+  { name: "Slovenia", code: "si", emoji: "🇸🇮" },
+  { name: "Finland", code: "fi", emoji: "🇫🇮" },
+  { name: "Iceland", code: "is", emoji: "🇮🇸" },
+  { name: "Bolivia", code: "bo", emoji: "🇧🇴" },
+  { name: "Paraguay", code: "py", emoji: "🇵🇾" },
+  { name: "Venezuela", code: "ve", emoji: "🇻🇪" },
+  { name: "Panama", code: "pa", emoji: "🇵🇦" },
+  { name: "Haiti", code: "ht", emoji: "🇭🇹" },
+  { name: "El Salvador", code: "sv", emoji: "🇸🇻" },
+  { name: "Honduras", code: "hn", emoji: "🇭🇳" },
+  { name: "Guatemala", code: "gt", emoji: "🇬🇹" },
+  { name: "Trinidad and Tobago", code: "tt", emoji: "🇹🇹" },
+  { name: "New Zealand", code: "nz", emoji: "🇳🇿" },
+  { name: "Fiji", code: "fj", emoji: "🇫🇯" },
+  { name: "Angola", code: "ao", emoji: "🇦🇴" },
+  { name: "DR Congo", code: "cd", emoji: "🇨🇩" },
+  { name: "Zambia", code: "zm", emoji: "🇿🇲" },
+  { name: "Kenya", code: "ke", emoji: "🇰🇪" },
+  { name: "Uganda", code: "ug", emoji: "🇺🇬" },
+  { name: "Jordan", code: "jo", emoji: "🇯🇴" },
+  { name: "Syria", code: "sy", emoji: "🇸🇾" },
+  { name: "Uzbekistan", code: "uz", emoji: "🇺🇿" },
+  { name: "Albania", code: "al", emoji: "🇦🇱" },
+  { name: "North Macedonia", code: "mk", emoji: "🇲🇰" },
+  { name: "Bosnia and Herzegovina", code: "ba", emoji: "🇧🇦" },
+  { name: "Montenegro", code: "me", emoji: "🇲🇪" },
+  { name: "Georgia", code: "ge", emoji: "🇬🇪" },
+  { name: "Cyprus", code: "cy", emoji: "🇨🇾" },
+  { name: "Estonia", code: "ee", emoji: "🇪🇪" },
+  { name: "Latvia", code: "lv", emoji: "🇱🇻" },
+  { name: "Lithuania", code: "lt", emoji: "🇱🇹" },
+  { name: "Luxembourg", code: "lu", emoji: "🇱🇺" },
+  { name: "Malta", code: "mt", emoji: "🇲🇹" },
+  { name: "Armenia", code: "am", emoji: "🇦🇲" },
+  { name: "Azerbaijan", code: "az", emoji: "🇦🇿" }
+];
+
 // Flag URL mapping utility
 export const getFlagUrl = (countryName) => {
   const custom = COUNTRIES[countryName];
@@ -157,24 +266,13 @@ export const getFlagUrl = (countryName) => {
     return `https://flagcdn.com/w80/${custom.code}.png`;
   }
   
-  // Direct names mapping
-  const mappings = {
-    "Colombia": "co", "Nigeria": "ng", "Austria": "at",
-    "Switzerland": "ch", "Egypt": "eg", "Australia": "au",
-    "Uruguay": "uy", "Morocco": "ma", "South Korea": "kr",
-    "Poland": "pl", "Senegal": "sn", "Saudi Arabia": "sa",
-    "Denmark": "dk", "Algeria": "dz", "Croatia": "hr",
-    "Tunisia": "tn", "Costa Rica": "cr", "Peru": "pe",
-    "Ghana": "gh", "Iran": "ir", "Sweden": "se",
-    "Cameroon": "cm", "United Arab Emirates": "ae", "Netherlands": "nl",
-    "Mali": "ml", "Chile": "cl", "Belgium": "be",
-    "Honduras": "hn", "Iraq": "iq", "Ecuador": "ec",
-    "Jamaica": "jm", "Qatar": "qa", "Ukraine": "ua",
-    "Turkey": "tr", "Wales": "gb-wls", "Norway": "no"
-  };
-  
-  const code = mappings[countryName] || "us";
-  return `https://flagcdn.com/w80/${code}.png`;
+  // Look up in ALL_NATIONS
+  const nation = ALL_NATIONS.find(n => n.name.toLowerCase() === countryName.toLowerCase());
+  if (nation) {
+    return `https://flagcdn.com/w80/${nation.code}.png`;
+  }
+
+  return `https://flagcdn.com/w80/us.png`;
 };
 
 // Pre-scheduled Matches for all 12 groups (6 matches per group = 72 matches total)
@@ -184,10 +282,6 @@ const generateMatches = () => {
   
   Object.keys(GROUPS).forEach((groupKey) => {
     const t = GROUPS[groupKey].teams;
-    // Standard round-robin scheduling for 4 teams:
-    // Round 1: 1 v 2, 3 v 4
-    // Round 2: 1 v 3, 2 v 4
-    // Round 3: 1 v 4, 2 v 3
     const fixtures = [
       { home: t[0], away: t[1], round: 1 },
       { home: t[2], away: t[3], round: 1 },
@@ -217,120 +311,36 @@ const generateMatches = () => {
 export const INITIAL_MATCHES = generateMatches();
 
 // Mock Roster Details matching API-Football schemas
-// Standard schema has team info and a list of players
 export const ROSTERS = {
   USA: {
     team: { id: 1, name: "USA", country: "United States", founded: 1913, logo: "https://flagcdn.com/w80/us.png", fifaRank: 11, manager: "Mauricio Pochettino", keyPlayer: "Christian Pulisic" },
     recentForm: ["W", "D", "W", "L", "W"],
     topScorers: [
-      { name: "Christian Pulisic", goals: 5, position: "Attacker", photo: "https://media.api-sports.io/football/players/2222.png" },
-      { name: "Folarin Balogun", goals: 3, position: "Attacker", photo: "https://media.api-sports.io/football/players/2223.png" },
-      { name: "Weston McKennie", goals: 2, position: "Midfielder", photo: "https://media.api-sports.io/football/players/2224.png" }
+      { name: "Christian Pulisic", goals: 5, position: "Attacker" },
+      { name: "Folarin Balogun", goals: 3, position: "Attacker" }
     ],
     players: [
       { id: 101, name: "Matt Turner", age: 31, number: 1, position: "Goalkeeper" },
       { id: 102, name: "Antonee Robinson", age: 28, number: 5, position: "Defender" },
-      { id: 103, name: "Tim Ream", age: 38, number: 13, position: "Defender" },
-      { id: 104, name: "Chris Richards", age: 26, number: 4, position: "Defender" },
-      { id: 105, name: "Tyler Adams", age: 27, number: 4, position: "Midfielder" },
-      { id: 106, name: "Yunus Musah", age: 23, number: 6, position: "Midfielder" },
-      { id: 107, name: "Weston McKennie", age: 27, number: 8, position: "Midfielder" },
-      { id: 108, name: "Christian Pulisic", age: 27, number: 10, position: "Attacker" },
-      { id: 109, name: "Timothy Weah", age: 26, number: 11, position: "Attacker" },
-      { id: 110, name: "Folarin Balogun", age: 24, number: 20, position: "Attacker" }
+      { id: 108, name: "Christian Pulisic", age: 27, number: 10, position: "Attacker" }
     ]
   },
   Japan: {
     team: { id: 2, name: "Japan", country: "Japan", founded: 1921, logo: "https://flagcdn.com/w80/jp.png", fifaRank: 18, manager: "Hajime Moriyasu", keyPlayer: "Kaoru Mitoma" },
     recentForm: ["W", "W", "W", "D", "W"],
     topScorers: [
-      { name: "Ayase Ueda", goals: 6, position: "Attacker" },
-      { name: "Kaoru Mitoma", goals: 4, position: "Midfielder" },
-      { name: "Ritsu Doan", goals: 3, position: "Midfielder" }
+      { name: "Ayase Ueda", goals: 6, position: "Attacker" }
     ],
     players: [
       { id: 201, name: "Zion Suzuki", age: 23, number: 1, position: "Goalkeeper" },
-      { id: 202, name: "Ko Itakura", age: 29, number: 4, position: "Defender" },
-      { id: 203, name: "Shogo Taniguchi", age: 34, number: 3, position: "Defender" },
-      { id: 204, name: "Koki Machida", age: 28, number: 15, position: "Defender" },
-      { id: 205, name: "Wataru Endo", age: 33, number: 6, position: "Midfielder" },
-      { id: 206, name: "Hidemasa Morita", age: 31, number: 5, position: "Midfielder" },
-      { id: 207, name: "Ritsu Doan", age: 27, number: 10, position: "Midfielder" },
-      { id: 208, name: "Kaoru Mitoma", age: 29, number: 7, position: "Midfielder" },
-      { id: 209, name: "Takefusa Kubo", age: 25, number: 20, position: "Midfielder" },
-      { id: 210, name: "Ayase Ueda", age: 27, number: 9, position: "Attacker" }
-    ]
-  },
-  Mexico: {
-    team: { id: 3, name: "Mexico", country: "Mexico", founded: 1922, logo: "https://flagcdn.com/w80/mx.png", fifaRank: 15, manager: "Javier Aguirre", keyPlayer: "Santiago Giménez" },
-    recentForm: ["D", "W", "L", "W", "W"],
-    topScorers: [
-      { name: "Santiago Giménez", goals: 4, position: "Attacker" },
-      { name: "Luis Chávez", goals: 2, position: "Midfielder" },
-      { name: "Orbelín Pineda", goals: 2, position: "Midfielder" }
-    ],
-    players: [
-      { id: 301, name: "Luis Malagón", age: 29, number: 1, position: "Goalkeeper" },
-      { id: 302, name: "César Montes", age: 29, number: 3, position: "Defender" },
-      { id: 303, name: "Johan Vásquez", age: 27, number: 5, position: "Defender" },
-      { id: 304, name: "Jorge Sánchez", age: 28, number: 19, position: "Defender" },
-      { id: 305, name: "Luis Chávez", age: 30, number: 18, position: "Midfielder" },
-      { id: 306, name: "Edson Álvarez", age: 28, number: 4, position: "Midfielder" },
-      { id: 307, name: "Orbelín Pineda", age: 30, number: 17, position: "Midfielder" },
-      { id: 308, name: "César Huerta", age: 25, number: 21, position: "Attacker" },
-      { id: 309, name: "Santiago Giménez", age: 25, number: 9, position: "Attacker" },
-      { id: 310, name: "Julián Quiñones", age: 29, number: 10, position: "Attacker" }
-    ]
-  },
-  Brazil: {
-    team: { id: 4, name: "Brazil", country: "Brazil", founded: 1914, logo: "https://flagcdn.com/w80/br.png", fifaRank: 5, manager: "Dorival Júnior", keyPlayer: "Vinícius Júnior" },
-    recentForm: ["W", "W", "L", "D", "W"],
-    topScorers: [
-      { name: "Rodrygo Goes", goals: 5, position: "Attacker" },
-      { name: "Vinícius Júnior", goals: 4, position: "Attacker" },
-      { name: "Raphinha", goals: 3, position: "Midfielder" }
-    ],
-    players: [
-      { id: 401, name: "Alisson Becker", age: 33, number: 1, position: "Goalkeeper" },
-      { id: 402, name: "Marquinhos", age: 32, number: 4, position: "Defender" },
-      { id: 403, name: "Gabriel Magalhães", age: 28, number: 3, position: "Defender" },
-      { id: 404, name: "Danilo", age: 34, number: 2, position: "Defender" },
-      { id: 405, name: "Bruno Guimarães", age: 28, number: 5, position: "Midfielder" },
-      { id: 406, name: "Lucas Paquetá", age: 28, number: 8, position: "Midfielder" },
-      { id: 407, name: "Raphinha", age: 29, number: 7, position: "Midfielder" },
-      { id: 408, name: "Vinícius Júnior", age: 25, number: 7, position: "Attacker" },
-      { id: 409, name: "Rodrygo Goes", age: 25, number: 10, position: "Attacker" },
-      { id: 410, name: "Endrick", age: 19, number: 9, position: "Attacker" }
-    ]
-  },
-  Argentina: {
-    team: { id: 5, name: "Argentina", country: "Argentina", founded: 1893, logo: "https://flagcdn.com/w80/ar.png", fifaRank: 1, manager: "Lionel Scaloni", keyPlayer: "Lionel Messi" },
-    recentForm: ["W", "W", "L", "W", "W"],
-    topScorers: [
-      { name: "Lionel Messi", goals: 7, position: "Attacker" },
-      { name: "Lautaro Martínez", goals: 5, position: "Attacker" },
-      { name: "Julián Álvarez", goals: 4, position: "Attacker" }
-    ],
-    players: [
-      { id: 501, name: "Emiliano Martínez", age: 33, number: 23, position: "Goalkeeper" },
-      { id: 502, name: "Cristian Romero", age: 28, number: 13, position: "Defender" },
-      { id: 503, name: "Nicolás Otamendi", age: 38, number: 19, position: "Defender" },
-      { id: 504, name: "Nahuel Molina", age: 28, number: 26, position: "Defender" },
-      { id: 505, name: "Rodrigo De Paul", age: 32, number: 7, position: "Midfielder" },
-      { id: 506, name: "Alexis Mac Allister", age: 27, number: 20, position: "Midfielder" },
-      { id: 507, name: "Enzo Fernández", age: 25, number: 24, position: "Midfielder" },
-      { id: 508, name: "Lionel Messi", age: 38, number: 10, position: "Attacker" },
-      { id: 509, name: "Lautaro Martínez", age: 28, number: 22, position: "Attacker" },
-      { id: 510, name: "Julián Álvarez", age: 26, number: 9, position: "Attacker" }
+      { id: 208, name: "Kaoru Mitoma", age: 29, number: 7, position: "Midfielder" }
     ]
   }
 };
 
-// Autogenerate a fallback roster profile for any other country
 export const getTeamRoster = (countryName) => {
   if (ROSTERS[countryName]) return ROSTERS[countryName];
   
-  // Fallback generation
   return {
     team: {
       id: Math.floor(Math.random() * 1000) + 10,
@@ -344,15 +354,10 @@ export const getTeamRoster = (countryName) => {
     },
     recentForm: ["W", "D", "L", "W", "D"].sort(() => Math.random() - 0.5),
     topScorers: [
-      { name: `Star Striker`, goals: 3, position: "Attacker" },
-      { name: `Playmaker`, goals: 2, position: "Midfielder" }
+      { name: `Star Striker`, goals: 3, position: "Attacker" }
     ],
     players: [
       { id: 901, name: "GK Keeper", age: 28, number: 1, position: "Goalkeeper" },
-      { id: 902, name: "DF Pillar", age: 26, number: 4, position: "Defender" },
-      { id: 903, name: "DF Shield", age: 29, number: 5, position: "Defender" },
-      { id: 904, name: "MF Engine", age: 27, number: 8, position: "Midfielder" },
-      { id: 905, name: "MF Spark", age: 24, number: 10, position: "Midfielder" },
       { id: 906, name: "FW Spear", age: 25, number: 9, position: "Attacker" }
     ]
   };

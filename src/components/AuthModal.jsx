@@ -3,7 +3,7 @@ import { signInWithEmail, signUpWithEmail, signInWithGoogle } from '../firebase/
 import { Mail, Lock, X, LogIn, UserPlus, ShieldAlert, Award } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
-export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
+export default function AuthModal({ isOpen, onClose, onAuthSuccess, closable = true }) {
   const [activeTab, setActiveTab] = useState("signin"); // signin or signup
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,6 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setError("");
     setLoading(true);
 
-    // Simple validation
     if (!email || !password) {
       setError("Please fill in all fields.");
       setLoading(false);
@@ -73,16 +72,30 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     }
   };
 
+  const handleBackdropClick = (e) => {
+    if (closable) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in">
-      <div className="w-full max-w-md glass-panel p-6 rounded-2xl border border-white/10 shadow-2xl relative overflow-hidden animate-slide-up">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-950/40 text-slate-400 hover:text-white transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
+    <div 
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in"
+    >
+      <div 
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking modal content
+        className="w-full max-w-md glass-panel p-6 rounded-2xl border border-white/10 shadow-2xl relative overflow-hidden animate-slide-up"
+      >
+        {/* Close button - conditionally rendered */}
+        {closable && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-1 rounded-lg border border-slate-800 hover:border-slate-700 bg-slate-950/40 text-slate-400 hover:text-white transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
 
         {/* Branding header */}
         <div className="text-center mb-6">
@@ -93,7 +106,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
             Fan Predictor Cloud
           </h3>
           <span className="text-[9px] font-extrabold uppercase tracking-widest text-cyan-400 mt-1 block">
-            Sync your tournament tree to your profile
+            {closable ? "Sync your tournament tree to your profile" : "Authentication Required to Enter Hub"}
           </span>
         </div>
 

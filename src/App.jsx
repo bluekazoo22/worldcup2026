@@ -15,7 +15,7 @@ import GamificationWidgets from './components/GamificationWidgets';
 import AuthModal from './components/AuthModal';
 import AdminDashboard from './components/AdminDashboard';
 
-import { Activity, ShieldAlert, Award, Grid, GitBranch, Search, Star, Shield } from 'lucide-react';
+import { Activity, ShieldAlert, Award, Grid, GitBranch, Search, Star, Shield, AlertTriangle } from 'lucide-react';
 
 export default function App() {
   const { userNation, setUserNation, activeTheme } = useTheme();
@@ -38,6 +38,10 @@ export default function App() {
   const [syncing, setSyncing] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  // Elimination alert states
+  const [silencedNation, setSilencedNation] = useState(null);
+  const [showEliminationModal, setShowEliminationModal] = useState(false);
+
   // Setup guest ID if not present
   useEffect(() => {
     if (!localStorage.getItem("wc2026_user_id")) {
@@ -52,7 +56,6 @@ export default function App() {
         setUser(authUser);
         setUserId(authUser.uid);
         
-        // Fetch saved predictions for authenticated user
         const savedData = await loadPredictions(authUser.uid);
         if (savedData) {
           if (savedData.userNation) setUserNation(savedData.userNation);
@@ -60,7 +63,6 @@ export default function App() {
           if (savedData.knockoutWinners) setKnockoutWinners(savedData.knockoutWinners);
           if (savedData.hypeCount) setHypeCount(savedData.hypeCount);
         } else {
-          // If no predictions exist in the cloud yet, push current local guest predictions to new account!
           await savePredictions(authUser.uid, {
             userNation,
             matches,
@@ -70,11 +72,9 @@ export default function App() {
         }
       } else {
         setUser(null);
-        // Revert to localStorage guest ID
         const guestId = localStorage.getItem("wc2026_user_id") || "guest_reverted";
         setUserId(guestId);
 
-        // Load guest predictions
         const savedData = await loadPredictions(guestId);
         if (savedData) {
           if (savedData.userNation) setUserNation(savedData.userNation);
@@ -120,7 +120,6 @@ export default function App() {
       let cleaned = false;
       const newWinners = { ...knockoutWinners };
 
-      // 1. Validate Round of 32 Winners
       r32Matches.forEach((m) => {
         const winner = newWinners[m.id];
         if (winner) {
@@ -133,7 +132,6 @@ export default function App() {
 
       const getWinner = (mId) => newWinners[mId] || "";
 
-      // 2. Validate Round of 16 Matchups
       const r16 = [
         { id: "R16-1", t1: getWinner("R32-1"), t2: getWinner("R32-2") },
         { id: "R16-2", t1: getWinner("R32-3"), t2: getWinner("R32-4") },
@@ -155,7 +153,6 @@ export default function App() {
         }
       });
 
-      // 3. Validate Quarterfinal Matchups
       const qf = [
         { id: "QF-1", t1: getWinner("R16-1"), t2: getWinner("R16-2") },
         { id: "QF-2", t1: getWinner("R16-3"), t2: getWinner("R16-4") },
@@ -173,7 +170,6 @@ export default function App() {
         }
       });
 
-      // 4. Validate Semifinal Matchups
       const sf = [
         { id: "SF-1", t1: getWinner("QF-1"), t2: getWinner("QF-2") },
         { id: "SF-2", t1: getWinner("QF-3"), t2: getWinner("QF-4") },
@@ -189,7 +185,6 @@ export default function App() {
         }
       });
 
-      // 5. Validate Final Matchup
       const finalT1 = getWinner("SF-1");
       const finalT2 = getWinner("SF-2");
       const finalWinner = newWinners["FINAL"];
@@ -207,6 +202,96 @@ export default function App() {
 
     cleanKnockoutWinners();
   }, [matches, knockoutWinners]);
+
+  // Dynamic Allegiance Elimination Evaluation
+  useEffect(() => {
+    if (!userNation || silencedNation === userNation) {
+      setShowEliminationModal(false);
+      return;
+    }
+
+    // 1. Locate team's group
+    let teamGroupKey = null;
+    Object.keys(GROUPS).forEach(key => {
+      if (GROUPS[key].teams.includes(userNation)) {
+        teamGroupKey = key;
+      }
+    });
+
+    // If the team is not playing in the tournament (not in the 48 teams), skip check
+    if (!teamGroupKey) return;
+
+    // 2. Check if their Group matches are fully completed
+    const groupMatches = matches.filter(m => m.group === teamGroupKey);
+    const groupCompleted = groupMatches.every(
+      m => m.homeScore !== "" && m.awayScore !== "" && m.homeScore !== null && m.awayScore !== null
+    );
+
+    if (groupCompleted) {
+      // Evaluate if the team qualified for R32
+      const groupStandings = standings[teamGroupKey];
+      const teamStandingIdx = groupStandings.findIndex(t => t.name === userNation);
+
+      if (teamStandingIdx === 3 || (teamStandingIdx === 2 && !bestThirdNames.includes(userNation))) {
+        // Eliminated in group stage
+        setShowEliminationModal(true);
+        return;
+      }
+
+      // 3. Evaluate in Knockout Matches
+      const r32Match = r32Matches.find(m => m.teamHome === userNation || m.teamAway === userNation);
+      if (r32Match) {
+        const w32 = knockoutWinners[r32Match.id];
+        if (w32 && w32 !== userNation) {
+          setShowEliminationModal(true);
+          return;
+        }
+
+        if (w32 === userNation) {
+          const r16MatchId = "R16-" + Math.ceil(parseInt(r32Match.id.replace("R32-", ""), 10) / 2);
+          const w16 = knockoutWinners[r16MatchId];
+          if (w16 && w16 !== userNation) {
+            setShowEliminationModal(true);
+            return;
+          }
+
+          if (w16 === userNation) {
+            const qfMatchId = "QF-" + Math.ceil(parseInt(r16MatchId.replace("R16-", ""), 10) / 2);
+            const wqf = knockoutWinners[qfMatchId];
+            if (wqf && wqf !== userNation) {
+              setShowEliminationModal(true);
+              return;
+            }
+
+            if (wqf === userNation) {
+              const sfMatchId = "SF-" + Math.ceil(parseInt(qfMatchId.replace("QF-", ""), 10) / 2);
+              const wsf = knockoutWinners[sfMatchId];
+              if (wsf && wsf !== userNation) {
+                setShowEliminationModal(true);
+                return;
+              }
+
+              if (wsf === userNation) {
+                const wfinal = knockoutWinners["FINAL"];
+                if (wfinal && wfinal !== userNation) {
+                  setShowEliminationModal(true);
+                  return;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // If we reach here, team is still alive
+    setShowEliminationModal(false);
+  }, [matches, knockoutWinners, userNation, silencedNation, standings, bestThirdNames, r32Matches]);
+
+  // Reset silenced flag when allegiance shifts
+  useEffect(() => {
+    setSilencedNation(null);
+  }, [userNation]);
 
   // State Updates
   const handleUpdateMatchScore = (matchId, homeScore, awayScore) => {
@@ -248,14 +333,13 @@ export default function App() {
 
   const handleSignOut = async () => {
     await signOutUser();
-    // Clear prediction states
     setMatches(INITIAL_MATCHES);
     setKnockoutWinners({});
     setHypeCount(0);
     setActiveTab("predict");
   };
 
-  // Compile Workspace tabs (Conditionally include Admin tab if user is mrnoahchen@gmail.com)
+  // Compile Workspace tabs
   const tabs = [
     { id: "predict", label: "My Match Predictor", icon: Star },
     { id: "hub", label: "Live Tournament Hub", icon: Grid },
@@ -270,18 +354,62 @@ export default function App() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-b ${activeTheme.dynamicGradient} text-slate-100 flex flex-col transition-all duration-1000`}>
-      {/* Welcome Intercept Modal */}
-      <WelcomeModal />
+      
+      {/* Welcome Intercept Modal (Opens only when logged in and allegiance is null) */}
+      {user && <WelcomeModal />}
 
-      {/* Cloud Authentication modal */}
+      {/* Cloud Authentication modal - FORCED until signed in */}
       <AuthModal
-        isOpen={isAuthModalOpen}
+        isOpen={!user || isAuthModalOpen}
+        closable={!!user}
         onClose={() => setIsAuthModalOpen(false)}
         onAuthSuccess={(u) => {
           setUser(u);
           setUserId(u.uid);
         }}
       />
+
+      {/* Team Elimination Check Overlay Alert */}
+      {showEliminationModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-fade-in">
+          <div className="w-full max-w-md glass-panel p-6 rounded-2xl border border-red-500/20 shadow-2xl text-center space-y-4 animate-slide-up">
+            <div className="inline-flex p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-full animate-pulse">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            
+            <h3 className="text-lg font-black text-white uppercase tracking-wider">
+              Allegiance Compromised!
+            </h3>
+            
+            <p className="text-slate-300 text-xs leading-relaxed">
+              In your predictions, <strong>{userNation}</strong> has been knocked out! Do you wish to switch allegiance to another nation, or do you stand with them till the end?
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <button
+                onClick={() => {
+                  setSilencedNation(userNation);
+                  setShowEliminationModal(false);
+                }}
+                className="py-2.5 px-4 bg-slate-950 hover:bg-slate-900 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all active:scale-95"
+              >
+                Keep Faith ✊
+              </button>
+              
+              <button
+                onClick={() => {
+                  // Reset selection to force WelcomeModal to trigger again!
+                  setUserNation(null);
+                  setShowEliminationModal(false);
+                }}
+                className="py-2.5 px-4 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-extrabold rounded-xl text-xs uppercase tracking-wider transition-all active:scale-95 shadow-lg shadow-red-600/10"
+              >
+                Switch Allegiance
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sticky Header */}
       <Header
@@ -301,6 +429,7 @@ export default function App() {
 
       {/* Main Workspace Layout */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
         {/* Left main workspace */}
         <div className="lg:col-span-3 space-y-6">
           
