@@ -35,8 +35,8 @@ export default function App() {
   });
 
   // Syncing states
-  const [syncing, setSyncing] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [syncStatus, setSyncStatus] = useState("idle"); // idle, saving, saved, error
+  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
 
   // Elimination alert states
   const [silencedNation, setSilencedNation] = useState(null);
@@ -52,6 +52,7 @@ export default function App() {
   // Auth State Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChange(async (authUser) => {
+      setIsInitialLoadComplete(false);
       if (authUser) {
         setUser(authUser);
         setUserId(authUser.uid);
@@ -83,10 +84,42 @@ export default function App() {
           if (savedData.hypeCount) setHypeCount(savedData.hypeCount);
         }
       }
+      setIsInitialLoadComplete(true);
     });
 
     return () => unsubscribe();
   }, [setUserNation]);
+
+  // Debounced Auto-Save to Firestore or LocalStorage
+  useEffect(() => {
+    if (!isInitialLoadComplete || !userId) return;
+
+    setSyncStatus("saving");
+
+    const timer = setTimeout(async () => {
+      try {
+        const result = await savePredictions(userId, {
+          userNation,
+          matches,
+          knockoutWinners,
+          hypeCount
+        });
+        
+        if (result.success) {
+          setSyncStatus("saved");
+          const idleTimer = setTimeout(() => setSyncStatus("idle"), 2500);
+          return () => clearTimeout(idleTimer);
+        } else {
+          setSyncStatus("error");
+        }
+      } catch (err) {
+        console.error("Auto-save error:", err);
+        setSyncStatus("error");
+      }
+    }, 1500); // 1.5s delay before saving
+
+    return () => clearTimeout(timer);
+  }, [userId, userNation, matches, knockoutWinners, hypeCount, isInitialLoadComplete]);
 
   // Derived Calculations
   const { standings, qualifiers } = calculateStandings(matches);
@@ -210,7 +243,6 @@ export default function App() {
       return;
     }
 
-    // 1. Locate team's group
     let teamGroupKey = null;
     Object.keys(GROUPS).forEach(key => {
       if (GROUPS[key].teams.includes(userNation)) {
@@ -218,27 +250,22 @@ export default function App() {
       }
     });
 
-    // If the team is not playing in the tournament (not in the 48 teams), skip check
     if (!teamGroupKey) return;
 
-    // 2. Check if their Group matches are fully completed
     const groupMatches = matches.filter(m => m.group === teamGroupKey);
     const groupCompleted = groupMatches.every(
       m => m.homeScore !== "" && m.awayScore !== "" && m.homeScore !== null && m.awayScore !== null
     );
 
     if (groupCompleted) {
-      // Evaluate if the team qualified for R32
       const groupStandings = standings[teamGroupKey];
       const teamStandingIdx = groupStandings.findIndex(t => t.name === userNation);
 
       if (teamStandingIdx === 3 || (teamStandingIdx === 2 && !bestThirdNames.includes(userNation))) {
-        // Eliminated in group stage
         setShowEliminationModal(true);
         return;
       }
 
-      // 3. Evaluate in Knockout Matches
       const r32Match = r32Matches.find(m => m.teamHome === userNation || m.teamAway === userNation);
       if (r32Match) {
         const w32 = knockoutWinners[r32Match.id];
@@ -284,11 +311,9 @@ export default function App() {
       }
     }
 
-    // If we reach here, team is still alive
     setShowEliminationModal(false);
   }, [matches, knockoutWinners, userNation, silencedNation, standings, bestThirdNames, r32Matches]);
 
-  // Reset silenced flag when allegiance shifts
   useEffect(() => {
     setSilencedNation(null);
   }, [userNation]);
@@ -314,21 +339,6 @@ export default function App() {
       ...prev,
       [matchId]: winnerTeam
     }));
-  };
-
-  const handleSyncCloud = async () => {
-    setSyncing(true);
-    const result = await savePredictions(userId, {
-      userNation,
-      matches,
-      knockoutWinners,
-      hypeCount
-    });
-    setSyncing(false);
-    if (result.success) {
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
-    }
   };
 
   const handleSignOut = async () => {
@@ -398,7 +408,6 @@ export default function App() {
               
               <button
                 onClick={() => {
-                  // Reset selection to force WelcomeModal to trigger again!
                   setUserNation(null);
                   setShowEliminationModal(false);
                 }}
@@ -418,14 +427,6 @@ export default function App() {
         onOpenLoginModal={() => setIsAuthModalOpen(true)}
         onSignOut={handleSignOut}
       />
-
-      {/* Floating Save success popup */}
-      {saveSuccess && (
-        <div className="fixed bottom-5 right-5 z-50 bg-emerald-500/90 border border-emerald-400 text-white font-bold text-xs py-3 px-5 rounded-2xl shadow-xl backdrop-blur-md animate-slide-up flex items-center space-x-2">
-          <span className="text-sm">⚡</span>
-          <span>Predictions synced successfully to cloud database!</span>
-        </div>
-      )}
 
       {/* Main Workspace Layout */}
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -496,8 +497,8 @@ export default function App() {
             badgeRanking={badgeRanking}
             hypeCount={hypeCount}
             onIncrementHype={() => setHypeCount((prev) => prev + 1)}
-            onSyncCloud={handleSyncCloud}
-            syncing={syncing}
+            isGuest={!user}
+            syncStatus={syncStatus}
           />
         </div>
       </main>
